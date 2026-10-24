@@ -71,5 +71,4 @@ A simple M.Tech DBMS project using **HTML/CSS/Bootstrap/JavaScript + Flask + MyS
 
 - For a **fresh installation**, run `database/schema.sql`, then `database/seed.sql`.
 - For an **existing database**, back it up and run `database/migration_partial_allocation.sql` in MySQL Workbench. Do not run `schema.sql` on an existing database because it drops and recreates `lab_equipment_db`.
-- Copy `.env.example` to `.env` and enter your local MySQL server password. Do not share `.env`.
 - Admin approval accepts three procedure arguments: booking ID, admin ID, and allocated quantity. Full allocations become `APPROVED`; smaller allocations become `PARTIALLY_APPROVED`.
