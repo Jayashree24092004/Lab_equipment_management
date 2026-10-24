@@ -1,0 +1,39 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Overdue Report</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Student</th>
+            <th>Equipment</th>
+            <th>Qty</th>
+            <th>Issue Date</th>
+            <th>Expected Return</th>
+            <th>Days Overdue</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in rows %}
+        <tr>
+            <td>{{ r.student }}</td>
+            <td>{{ r.equipment }}</td>
+            <td>{{ r.quantity }}</td>
+            <td>{{ r.issue_date }}</td>
+            <td>{{ r.expected_return_date }}</td>
+            <td>
+                <span class="badge text-bg-danger">
+                    {{ r.days_overdue }}
+                </span>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="6">No overdue equipment.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

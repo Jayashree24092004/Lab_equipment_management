@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Lab Admin Dashboard</h2>
+
+<div class="row g-3 my-2">
+    {% for label, value in [
+        ('Total Units', stats.total_units),
+        ('Available Units', stats.available_units),
+        ('Pending Requests', stats.pending_requests),
+        ('Approved Bookings', stats.approved_bookings),
+        ('Partially Approved', stats.partial_bookings),
+        ('Issued Units', stats.issued_units),
+        ('Overdue', stats.overdue_count)
+    ] %}
+    <div class="col-md-4 col-lg-3">
+        <div class="stat-card">
+            <span>{{ label }}</span>
+            <strong>{{ value or 0 }}</strong>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="d-flex justify-content-between align-items-center mt-4">
+    <h4>Pending Bookings</h4>
+    <a href="{{ url_for('main.admin_bookings') }}" class="btn btn-outline-primary">
+        Manage Bookings
+    </a>
+</div>
+
+<div class="table-responsive mt-3">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Booking</th>
+                <th>Student</th>
+                <th>Equipment</th>
+                <th>Requested Qty</th>
+                <th>Date / Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for b in pending %}
+            <tr>
+                <td>B{{ '%04d'|format(b.booking_id) }}</td>
+                <td>{{ b.registration_number }}<br><small>{{ b.student_name }}</small></td>
+                <td>{{ b.equipment_name }}</td>
+                <td>{{ b.quantity }}</td>
+                <td>{{ b.booking_date }}<br>{{ b.start_time }} - {{ b.end_time }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5" class="text-muted">No pending requests.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

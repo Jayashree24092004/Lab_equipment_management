@@ -1,0 +1,115 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Booking Management</h2>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Booking</th>
+                <th>Student</th>
+                <th>Equipment</th>
+                <th>Requested / Allocated</th>
+                <th>Date / Time</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for b in bookings %}
+            <tr>
+                <td>B{{ '%04d'|format(b.booking_id) }}</td>
+
+                <td>
+                    {{ b.registration_number }}<br>
+                    {{ b.student_name }}
+                </td>
+
+                <td>{{ b.equipment_name }}</td>
+
+                <td>
+                    Requested: {{ b.quantity }}<br>
+
+                    {% if b.allocated_quantity > 0 %}
+                        Allocated: {{ b.allocated_quantity }}
+                    {% elif b.status == 'PENDING' %}
+                        <span class="text-muted">
+                            Awaiting approval
+                        </span>
+                    {% else %}
+                        <span class="text-muted">Not allocated</span>
+                    {% endif %}
+                </td>
+
+                <td>
+                    {{ b.booking_date }}<br>
+                    {{ b.start_time }} - {{ b.end_time }}
+                </td>
+
+                <td>
+                    <span class="badge status-{{ b.status|lower }}">
+                        {{ b.status|replace('_', ' ') }}
+                    </span>
+                </td>
+
+                <td>
+                    {% if b.status == 'PENDING' %}
+
+                    <form method="post"
+                          action="{{ url_for('main.booking_action',
+                              booking_id=b.booking_id,
+                              action='approve') }}">
+
+                        <label for="allocated_{{ b.booking_id }}">
+                            Quantity to allocate
+                        </label>
+
+                        <input
+                            class="form-control form-control-sm mb-2"
+                            style="max-width: 140px;"
+                            type="number"
+                            id="allocated_{{ b.booking_id }}"
+                            name="allocated_quantity"
+                            min="1"
+                            max="{{ b.quantity }}"
+                            value="{{ b.quantity }}"
+                            required
+                        >
+
+                        <button type="submit"
+                                class="btn btn-sm btn-success">
+                            Approve Allocation
+                        </button>
+                    </form>
+
+                    <form class="mt-2"
+                          method="post"
+                          action="{{ url_for('main.booking_action',
+                              booking_id=b.booking_id,
+                              action='reject') }}">
+
+                        <button type="submit"
+                                class="btn btn-sm btn-danger">
+                            Reject
+                        </button>
+                    </form>
+
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="text-muted">
+                    No bookings found.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}{% block content %}
+<div class="card p-4 mx-auto" style="max-width:760px">
+  <h2>Edit Equipment</h2>
+
+  <form method="post">
+    <div class="row g-3">
+      <div class="col-md-6"><label class="form-label">Equipment Code</label><input class="form-control" name="equipment_code" value="{{ equipment.equipment_code }}" required></div>
+      <div class="col-md-6"><label class="form-label">Equipment Name</label><input class="form-control" name="equipment_name" value="{{ equipment.equipment_name }}" required></div>
+      <div class="col-md-6"><label class="form-label">Category</label><select class="form-select" name="category_id" required>{% for c in categories %}<option value="{{ c.category_id }}" {% if c.category_id == equipment.category_id %}selected{% endif %}>{{ c.category_name }}</option>{% endfor %}</select></div>
+      <div class="col-md-6"><label class="form-label">Total Quantity</label><input type="number" class="form-control" name="total_quantity" min="1" value="{{ equipment.total_quantity }}" required><small class="text-muted">Currently available: {{ equipment.available_quantity }}</small></div>
+      <div class="col-12"><label class="form-label">Description</label><textarea class="form-control" name="description">{{ equipment.description or '' }}</textarea></div>
+      <div class="col-md-6"><label class="form-label">Location</label><input class="form-control" name="location" value="{{ equipment.location }}" required></div>
+      <div class="col-md-3"><label class="form-label">Condition</label><select class="form-select" name="condition">{% for v in ['Good','Fair','Needs Repair'] %}<option {% if v == equipment.condition %}selected{% endif %}>{{ v }}</option>{% endfor %}</select></div>
+      <div class="col-md-3"><label class="form-label">Status</label><select class="form-select" name="status">{% for v in ['AVAILABLE','UNAVAILABLE','MAINTENANCE'] %}<option {% if v == equipment.status %}selected{% endif %}>{{ v }}</option>{% endfor %}</select></div>
+    </div>
+    <div class="d-flex gap-2 mt-4"><button class="btn btn-primary">Save Changes</button><a class="btn btn-outline-secondary" href="{{ url_for('main.admin_equipment') }}">Cancel</a></div>
+  </form>
+</div>{% endblock %}

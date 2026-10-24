@@ -1,0 +1,11 @@
+{% extends 'base.html' %}{% block content %}
+<div class="hero p-5 rounded-4 mb-4">
+ 
+  <h1>Lab Equipment Booking & Inventory Management System</h1>
+
+</div>
+<div class="row g-4">
+  <div class="col-md-6"><div class="card h-100 p-4"><h3>Student</h3><p>View equipment, request bookings, track approvals and return issued equipment.</p><div class="d-flex flex-wrap gap-2"><a class="btn btn-primary" href="{{ url_for('main.student_login') }}">Student Login</a><a class="btn btn-outline-primary" href="{{ url_for('main.student_register') }}">Student Register</a></div></div></div>
+  <div class="col-md-6"><div class="card h-100 p-4"><h3>Lab Admin</h3><p>Approve/reject requests, manage equipment, view issues, returns and overdue reports.</p><div class="d-flex flex-wrap gap-2"><a class="btn btn-dark" href="{{ url_for('main.admin_login') }}">Admin Login</a><a class="btn btn-outline-dark" href="{{ url_for('main.admin_register') }}">Admin Register</a></div></div></div>
+</div>
+{% endblock %}

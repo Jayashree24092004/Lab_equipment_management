@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2>Welcome, {{ student.name }}</h2>
+        <p class="text-muted mb-0">{{ student.registration_number }} · {{ student.department }}</p>
+    </div>
+    <a class="btn btn-primary" href="{{ url_for('main.student_equipment') }}">Browse Equipment</a>
+</div>
+
+<div class="row g-3 mb-4">
+    {% for label, value in [
+        ('Pending', counts.pending_count),
+        ('Fully Approved', counts.approved_count),
+        ('Partially Approved', counts.partial_count),
+        ('Rejected / Cancelled', counts.rejected_count)
+    ] %}
+    <div class="col-md-3">
+        <div class="stat-card">
+            <span>{{ label }}</span>
+            <strong>{{ value or 0 }}</strong>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<h4>Available Equipment</h4>
+<div class="row g-3 mb-4">
+    {% for e in equipment[:6] %}
+    <div class="col-md-4">
+        <div class="card h-100 p-3">
+            <div class="d-flex justify-content-between">
+                <h5>{{ e.equipment_name }}</h5>
+                <span class="badge text-bg-success">{{ e.available_quantity }} available</span>
+            </div>
+            <p class="text-muted">{{ e.category_name }} · {{ e.location }}</p>
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('main.book_equipment', equipment_id=e.equipment_id) }}">Book</a>
+        </div>
+    </div>
+    {% else %}
+    <p class="text-muted">No equipment available.</p>
+    {% endfor %}
+</div>
+
+<h4>My Active Equipment</h4>
+{% if active %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead><tr><th>Equipment</th><th>Qty Issued</th><th>Issued</th><th>Return By</th><th>Status</th></tr></thead>
+        <tbody>
+        {% for i in active %}
+            <tr>
+                <td>{{ i.equipment_name }}</td>
+                <td>{{ i.quantity_issued }}</td>
+                <td>{{ i.issue_date }}</td>
+                <td>{{ i.expected_return_date }}</td>
+                <td><span class="badge text-bg-primary">{{ i.status }}</span></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="text-muted">No active equipment.</p>
+{% endif %}
+
+<h4 class="mt-4">Booking History</h4>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr><th>Booking ID</th><th>Equipment</th><th>Requested / Approved</th><th>Date / Time</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+        {% for b in bookings %}
+            <tr>
+                <td>B{{ '%04d'|format(b.booking_id) }}</td>
+                <td>{{ b.equipment_name }}</td>
+                <td>
+                    Requested: {{ b.quantity }}<br>
+                    {% if b.status in ['APPROVED', 'PARTIALLY_APPROVED'] %}
+                        <strong>Approved: {{ b.allocated_quantity }}</strong>
+                    {% elif b.status == 'PENDING' %}
+                        <span class="text-muted">Awaiting approval</span>
+                    {% else %}
+                        <span class="text-muted">Not allocated</span>
+                    {% endif %}
+                </td>
+                <td>{{ b.booking_date }}<br>{{ b.start_time }} - {{ b.end_time }}</td>
+                <td><span class="badge status-{{ b.status|lower }}">{{ b.status|replace('_', ' ') }}</span></td>
+            </tr>
+        {% else %}
+            <tr><td colspan="5" class="text-muted">You have not made any bookings yet.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
